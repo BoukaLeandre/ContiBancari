@@ -1,0 +1,22 @@
+# .github/workflows/cpp-tests.yml
+name: Test C++
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clona il repository
+        uses: actions/checkout@v3
+
+      - name: Installa il compilatore
+        run: sudo apt-get install g++
+
+      - name: Compila il progetto
+        run: g++ main.cpp -o programma
+
+      - name: Esegui il programma
+        run: ./programma

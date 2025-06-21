@@ -1,28 +1,29 @@
 
-# ❌ Ignora tutto di default
+# Ignore tout par défaut
 *
 
-# ✅ Ma NON ignorare questi file importanti:
+# Mais NE PAS ignorer les fichiers essentiels :
 !main.cpp
 !README.md
 !.gitignore
 
-# ✅ NON ignorare la cartella dei workflow di GitHub Actions
+# Ne PAS ignorer la structure des workflows GitHub
 !.github/
 !.github/workflows/
+!.github/workflows/cpp-tests.yml
 
-# ❌ Ignora file temporanei o specifici dell'ambiente
+# Ignore fichiers inutiles
 *.exe
 *.o
 *.out
 *.log
 *.tmp
 
-# ❌ Ignora file generati da IDE come CLion o VSCode
+# Ignore fichiers des IDE
 .idea/
 .vscode/
 cmake-build-*/
 
-# ❌ Ignora file di sistema
+# Ignore fichiers système
 .DS_Store
 Thumbs.db
