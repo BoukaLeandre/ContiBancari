@@ -1,0 +1,23 @@
+name: C++ Build & Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clona il repository
+        uses: actions/checkout@v3
+
+      - name: Installa g++
+        run: sudo apt-get install g++ -y
+
+      - name: Compila e esegui i test
+        run: |
+          g++ -std=c++11 -o test main.cpp
+          ./test
