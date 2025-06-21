@@ -20,3 +20,7 @@ jobs:
 
       - name: Esegui il programma
         run: ./programma
+               - name: Esegui il programma con input simulato
+               run: |
+                 echo -e "Mario Rossi\n1\n100\n5" | ./programma
+
