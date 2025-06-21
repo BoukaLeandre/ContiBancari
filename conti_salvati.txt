@@ -1,8 +1,0 @@
-Leandre Siddhata
-entrata 500 2025-06-01
-uscita 150 2025-06-02
-#
-Bouka
-entrata 1000 2025-06-01
-entrata 50 oggi
-#

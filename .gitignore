@@ -1,11 +1,9 @@
-# Fichiers et dossiers à ignorer
-.idea/
-cmake-build-*/
-*.iml
-CMakeFiles/
-CMakeCache.txt
-cmake_install.cmake
-build/
-*.o
-*.exe
-*.log
+# ❌ Ignora tutto
+*
+
+# ✅ Ma NON ignorare questi file (sono importanti per il progetto)
+!main.cpp
+!README.md
+!CMakeLists.txt
+!.gitignore
+!.github/
