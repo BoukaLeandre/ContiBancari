@@ -1,23 +1,25 @@
-name: C++ Build & Test
+name: Test Automatici C++
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
-      - name: Clona il repository
+      - name: 📥 Clonazione del codice
         uses: actions/checkout@v3
 
-      - name: Installa g++
+      - name: ⚙️ Installazione del compilatore C++
         run: sudo apt-get install g++ -y
 
-      - name: Compila e esegui i test
-        run: |
-          g++ -std=c++11 -o test main.cpp
-          ./test
+      - name: 🛠️ Compilazione del programma
+        run: g++ main.cpp -o conti
+
+      - name: ✅ Esecuzione dei test
+        run: ./conti
