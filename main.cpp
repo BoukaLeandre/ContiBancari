@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <fstream>
 
 using namespace std;
 
@@ -45,6 +46,29 @@ public:
             cout << t.data << " - " << t.tipo << ": " << t.importo << " euro\n";
         }
         cout << "Saldo finale: " << calcolaSaldo() << " euro\n";
+    }
+
+    // 🔽 Sauvegarde sur fichier
+    virtual void salvaSuFile(ofstream& out) const {
+        out << intestatario << endl;
+        for (const auto& t : transazioni) {
+            out << t.tipo << " " << t.importo << " " << t.data << endl;
+        }
+        out << "#" << endl; // Fin du compte
+    }
+
+    // 🔽 Chargement depuis fichier
+    virtual void caricaDaFile(ifstream& in) {
+        transazioni.clear();
+        in >> intestatario;
+        string tipo;
+        double importo;
+        string data;
+
+        while (in >> tipo && tipo != "#") {
+            in >> importo >> data;
+            transazioni.emplace_back(tipo, importo, data);
+        }
     }
 
     virtual ~ContoCorrente() {}
@@ -127,15 +151,28 @@ int main() {
     conto2.stampaTipo();
     conto2.stampaEstrattoConto();
 
+    // ✅ Sauvegarde su file
+    ofstream outFile("conti_salvati.txt");
+    conto1.salvaSuFile(outFile);
+    conto2.salvaSuFile(outFile);
+    outFile.close();
+    cout << "\n[OK] Conti salvati su file conti_salvati.txt\n";
+
+    // ✅ Lettura da file
+    ifstream inFile("conti_salvati.txt");
+    ContoRisparmio conto3("Vuoto");
+    ContoDeposito conto4("Vuoto", 0.05);
+    conto3.caricaDaFile(inFile);
+    conto4.caricaDaFile(inFile);
+    inFile.close();
+
+    cout << "\n[OK] Conti letti da file\n";
+    conto3.stampaEstrattoConto();
+    conto4.stampaEstrattoConto();
+
     cout << "\n--- Esecuzione Test Unitari ---\n";
     test_calcolaSaldo_ContoRisparmio();
     test_applicaInteresse_ContoDeposito();
 
     return 0;
 }
-
-
-// TIP See CLion help at <a
-// href="https://www.jetbrains.com/help/clion/">jetbrains.com/help/clion/</a>.
-//  Also, you can try interactive lessons for CLion by selecting
-//  'Help | Learn IDE Features' from the main menu.
