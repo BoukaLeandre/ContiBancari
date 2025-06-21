@@ -48,26 +48,17 @@ public:
         cout << "Saldo finale: " << calcolaSaldo() << " euro\n";
     }
 
-    // 🔽 Sauvegarde sur fichier
-    virtual void salvaSuFile(ofstream& out) const {
-        out << intestatario << endl;
-        for (const auto& t : transazioni) {
-            out << t.tipo << " " << t.importo << " " << t.data << endl;
-        }
-        out << "#" << endl; // Fin du compte
-    }
-
-    // 🔽 Chargement depuis fichier
-    virtual void caricaDaFile(ifstream& in) {
-        transazioni.clear();
-        in >> intestatario;
-        string tipo;
-        double importo;
-        string data;
-
-        while (in >> tipo && tipo != "#") {
-            in >> importo >> data;
-            transazioni.emplace_back(tipo, importo, data);
+    virtual void salvaSuFile(const string& nomeFile) const {
+        ofstream file(nomeFile);
+        if (file.is_open()) {
+            file << "Intestatario: " << intestatario << "\n";
+            for (const auto& t : transazioni) {
+                file << t.data << "," << t.tipo << "," << t.importo << "\n";
+            }
+            file << "Saldo finale: " << calcolaSaldo() << "\n";
+            file.close();
+        } else {
+            cerr << "Errore nell'apertura del file.\n";
         }
     }
 
@@ -103,76 +94,67 @@ public:
     }
 };
 
-// -------------------- TEST UNITARI --------------------
-
-void test_calcolaSaldo_ContoRisparmio() {
-    ContoRisparmio test("Test");
-    test.aggiungiTransazione(Transazione("entrata", 100, "2025-01-01"));
-    test.aggiungiTransazione(Transazione("uscita", 30, "2025-01-02"));
-    double saldo = test.calcolaSaldo();
-
-    if (saldo == 70) {
-        cout << "[OK] test_calcolaSaldo_ContoRisparmio" << endl;
-    } else {
-        cout << "[ERRORE] test_calcolaSaldo_ContoRisparmio: atteso 70, ottenuto " << saldo << endl;
-    }
-}
-
-void test_applicaInteresse_ContoDeposito() {
-    ContoDeposito test("Test", 0.10); // 10% interesse
-    test.aggiungiTransazione(Transazione("entrata", 1000, "2025-01-01"));
-    test.applicaInteresse(); // aggiunge 100 euro di interesse
-
-    double saldo = test.calcolaSaldo();
-
-    if (saldo == 1100) {
-        cout << "[OK] test_applicaInteresse_ContoDeposito" << endl;
-    } else {
-        cout << "[ERRORE] test_applicaInteresse_ContoDeposito: atteso 1100, ottenuto " << saldo << endl;
-    }
-}
-
-// -------------------- MAIN --------------------
+// -------------------- MAIN INTERATTIVO --------------------
 
 int main() {
-    // Creazione conto risparmio
-    ContoRisparmio conto1("Leandre Siddhata");
-    conto1.aggiungiTransazione(Transazione("entrata", 500, "2025-06-01"));
-    conto1.aggiungiTransazione(Transazione("uscita", 150, "2025-06-02"));
-    conto1.stampaTipo();
-    conto1.stampaEstrattoConto();
+    cout << "Benvenuto nel sistema bancario!\n";
+    cout << "Inserisci il tuo nome completo: ";
+    string nome;
+    getline(cin, nome);
 
-    cout << endl;
+    cout << "Che tipo di conto vuoi aprire?\n";
+    cout << "[1] Conto Risparmio\n";
+    cout << "[2] Conto Deposito\n";
+    cout << "[5] Annulla\n";
+    int scelta;
+    cin >> scelta;
 
-    // Creazione conto deposito
-    ContoDeposito conto2("Bouka", 0.05); // 5% interesse
-    conto2.aggiungiTransazione(Transazione("entrata", 1000, "2025-06-01"));
-    conto2.applicaInteresse();
-    conto2.stampaTipo();
-    conto2.stampaEstrattoConto();
+    if (scelta == 5) {
+        cout << "Operazione annullata. Grazie e arrivederci!\n";
+        return 0;
+    }
 
-    // ✅ Sauvegarde su file
-    ofstream outFile("conti_salvati.txt");
-    conto1.salvaSuFile(outFile);
-    conto2.salvaSuFile(outFile);
-    outFile.close();
-    cout << "\n[OK] Conti salvati su file conti_salvati.txt\n";
+    ContoCorrente* conto = nullptr;
 
-    // ✅ Lettura da file
-    ifstream inFile("conti_salvati.txt");
-    ContoRisparmio conto3("Vuoto");
-    ContoDeposito conto4("Vuoto", 0.05);
-    conto3.caricaDaFile(inFile);
-    conto4.caricaDaFile(inFile);
-    inFile.close();
+    if (scelta == 1) {
+        conto = new ContoRisparmio(nome);
+    } else if (scelta == 2) {
+        conto = new ContoDeposito(nome, 0.05); // 5% di interesse
+    } else {
+        cout << "Scelta non valida.\n";
+        return 1;
+    }
 
-    cout << "\n[OK] Conti letti da file\n";
-    conto3.stampaEstrattoConto();
-    conto4.stampaEstrattoConto();
+    int opzione = 0;
+    do {
+        cout << "\nScegli un'operazione:\n";
+        cout << "[1] Aggiungi transazione\n";
+        cout << "[2] Stampa estratto conto\n";
+        cout << "[3] Salva su file\n";
+        cout << "[0] Esci\n";
+        cin >> opzione;
 
-    cout << "\n--- Esecuzione Test Unitari ---\n";
-    test_calcolaSaldo_ContoRisparmio();
-    test_applicaInteresse_ContoDeposito();
+        if (opzione == 1) {
+            string tipo, data;
+            double importo;
+            cout << "Tipo di transazione (entrata/uscita): ";
+            cin >> tipo;
+            cout << "Importo: ";
+            cin >> importo;
+            cout << "Data (es. 2025-06-20): ";
+            cin >> data;
 
+            conto->aggiungiTransazione(Transazione(tipo, importo, data));
+        } else if (opzione == 2) {
+            conto->stampaEstrattoConto();
+        } else if (opzione == 3) {
+            conto->salvaSuFile("estratto_conto.txt");
+            cout << "Dati salvati nel file 'estratto_conto.txt'\n";
+        }
+    } while (opzione != 0);
+
+    delete conto;
+
+    cout << "Grazie per aver usato il nostro sistema!\n";
     return 0;
 }

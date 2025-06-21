@@ -1,0 +1,11 @@
+# Fichiers et dossiers à ignorer
+.idea/
+cmake-build-*/
+*.iml
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+build/
+*.o
+*.exe
+*.log
