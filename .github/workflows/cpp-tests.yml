@@ -1,24 +1,22 @@
-# .github/workflows/cpp-tests.yml
-name: Test C++
+name: Test automatici C++
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-      - name: Clona il repository
+      - name: Checkout del codice
         uses: actions/checkout@v3
 
-      - name: Installa il compilatore
-        run: sudo apt-get install g++
-
-      - name: Compila il progetto
+      - name: Compilazione
         run: g++ main.cpp -o programma
 
-      - name: Esegui il programma
-        run: ./programma
-
-
+      - name: Esecuzione del programma con input simulato
+        run: |
+          echo -e "le Beretti\n1\n1\nentrata\n500\n2025-06-21\n2\n0" | ./programma

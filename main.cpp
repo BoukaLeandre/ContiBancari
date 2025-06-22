@@ -103,7 +103,7 @@ int main(int argc, char* argv[]) {
     int scelta = 0;
 
     if (testMode) {
-        nome = "Mario Rossi";
+        nome = "Le Beretti";
         scelta = 1; // Conto Risparmio
     } else {
         cout << "Benvenuto nel sistema bancario!\n";
