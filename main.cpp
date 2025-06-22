@@ -96,22 +96,30 @@ public:
 
 // -------------------- MAIN INTERATTIVO --------------------
 
-int main() {
-    cout << "Benvenuto nel sistema bancario!\n";
-    cout << "Inserisci il tuo nome completo: ";
+int main(int argc, char* argv[]) {
+    bool testMode = argc > 1 && string(argv[1]) == "e";
+
     string nome;
-    getline(cin, nome);
+    int scelta = 0;
 
-    cout << "Che tipo di conto vuoi aprire?\n";
-    cout << "[1] Conto Risparmio\n";
-    cout << "[2] Conto Deposito\n";
-    cout << "[5] Annulla\n";
-    int scelta;
-    cin >> scelta;
+    if (testMode) {
+        nome = "Mario Rossi";
+        scelta = 1; // Conto Risparmio
+    } else {
+        cout << "Benvenuto nel sistema bancario!\n";
+        cout << "Inserisci il tuo nome completo: ";
+        getline(cin, nome);
 
-    if (scelta == 5) {
-        cout << "Operazione annullata. Grazie e arrivederci!\n";
-        return 0;
+        cout << "Che tipo di conto vuoi aprire?\n";
+        cout << "[1] Conto Risparmio\n";
+        cout << "[2] Conto Deposito\n";
+        cout << "[5] Annulla\n";
+        cin >> scelta;
+
+        if (scelta == 5) {
+            cout << "Operazione annullata. Grazie e arrivederci!\n";
+            return 0;
+        }
     }
 
     ContoCorrente* conto = nullptr;
@@ -125,36 +133,42 @@ int main() {
         return 1;
     }
 
-    int opzione = 0;
-    do {
-        cout << "\nScegli un'operazione:\n";
-        cout << "[1] Aggiungi transazione\n";
-        cout << "[2] Stampa estratto conto\n";
-        cout << "[3] Salva su file\n";
-        cout << "[0] Esci\n";
-        cin >> opzione;
+    if (testMode) {
+        conto->aggiungiTransazione(Transazione("entrata", 500.0, "2025-06-20"));
+        conto->aggiungiTransazione(Transazione("uscita", 200.0, "2025-06-21"));
+        conto->stampaEstrattoConto();
+        conto->salvaSuFile("estratto_conto_test.txt");
+    } else {
+        int opzione = 0;
+        do {
+            cout << "\nScegli un'operazione:\n";
+            cout << "[1] Aggiungi transazione\n";
+            cout << "[2] Stampa estratto conto\n";
+            cout << "[3] Salva su file\n";
+            cout << "[0] Esci\n";
+            cin >> opzione;
 
-        if (opzione == 1) {
-            string tipo, data;
-            double importo;
-            cout << "Tipo di transazione (entrata/uscita): ";
-            cin >> tipo;
-            cout << "Importo: ";
-            cin >> importo;
-            cout << "Data (es. 2025-06-20): ";
-            cin >> data;
+            if (opzione == 1) {
+                string tipo, data;
+                double importo;
+                cout << "Tipo di transazione (entrata/uscita): ";
+                cin >> tipo;
+                cout << "Importo: ";
+                cin >> importo;
+                cout << "Data (es. 2025-06-20): ";
+                cin >> data;
 
-            conto->aggiungiTransazione(Transazione(tipo, importo, data));
-        } else if (opzione == 2) {
-            conto->stampaEstrattoConto();
-        } else if (opzione == 3) {
-            conto->salvaSuFile("estratto_conto.txt");
-            cout << "Dati salvati nel file 'estratto_conto.txt'\n";
-        }
-    } while (opzione != 0);
+                conto->aggiungiTransazione(Transazione(tipo, importo, data));
+            } else if (opzione == 2) {
+                conto->stampaEstrattoConto();
+            } else if (opzione == 3) {
+                conto->salvaSuFile("estratto_conto.txt");
+                cout << "Dati salvati nel file 'estratto_conto.txt'\n";
+            }
+        } while (opzione != 0);
+    }
 
     delete conto;
-
     cout << "Grazie per aver usato il nostro sistema!\n";
     return 0;
 }
