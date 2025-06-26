@@ -5,17 +5,17 @@
 
 using namespace std;
 
-// Classe che rappresenta una transazione
+
 class Transazione {
 public:
-    string tipo; // "entrata" o "uscita"
+    string tipo;
     double importo;
     string data;
 
     Transazione(string t, double i, string d) : tipo(t), importo(i), data(d) {}
 };
 
-// Classe base astratta per Conto Corrente
+
 class ContoCorrente {
 protected:
     string intestatario;
@@ -25,6 +25,9 @@ public:
     ContoCorrente(string nome) : intestatario(nome) {}
 
     void aggiungiTransazione(const Transazione& t) {
+        if (t.importo <=0) {
+            cerr << "l'importo deve essere positivo di 0.transazione annullata.\n";
+        }
         transazioni.push_back(t);
     }
 
@@ -43,9 +46,9 @@ public:
     virtual void stampaEstrattoConto() const {
         cout << "Estratto conto di " << intestatario << ":\n";
         for (const auto& t : transazioni) {
-            cout << t.data << " - " << t.tipo << ": " << t.importo << " euro\n";
+            cout << t.data << " - " << t.tipo << ": " << t.importo << " €\n";
         }
-        cout << "Saldo finale: " << calcolaSaldo() << " euro\n";
+        cout << "Saldo finale: " << calcolaSaldo() << " €\n";
     }
 
     virtual void salvaSuFile(const string& nomeFile) const {
@@ -53,9 +56,11 @@ public:
         if (file.is_open()) {
             file << "Intestatario: " << intestatario << "\n";
             for (const auto& t : transazioni) {
-                file << t.data << "," << t.tipo << "," << t.importo << "\n";
+                file << "tipo: " << t.tipo << "\n";
+                file << "importo: " << t.importo << " €\n";
+                file << "data: " << t.data << "\n";
             }
-            file << "Saldo finale: " << calcolaSaldo() << "\n";
+            file << "Saldo finale: " << calcolaSaldo() << " €\n";
             file.close();
         } else {
             cerr << "Errore nell'apertura del file.\n";
@@ -65,7 +70,7 @@ public:
     virtual ~ContoCorrente() {}
 };
 
-// Conto Risparmio
+
 class ContoRisparmio : public ContoCorrente {
 public:
     ContoRisparmio(string nome) : ContoCorrente(nome) {}
@@ -75,7 +80,7 @@ public:
     }
 };
 
-// Conto Deposito con interessi
+
 class ContoDeposito : public ContoCorrente {
 private:
     double interessePercentuale;
@@ -94,7 +99,7 @@ public:
     }
 };
 
-// -------------------- MAIN INTERATTIVO --------------------
+
 
 int main(int argc, char* argv[]) {
     bool testMode = argc > 1 && string(argv[1]) == "e";
@@ -104,7 +109,7 @@ int main(int argc, char* argv[]) {
 
     if (testMode) {
         nome = "Le Beretti";
-        scelta = 1; // Conto Risparmio
+        scelta = 1;
     } else {
         cout << "Benvenuto nel sistema bancario!\n";
         cout << "Inserisci il tuo nome completo: ";
@@ -127,15 +132,15 @@ int main(int argc, char* argv[]) {
     if (scelta == 1) {
         conto = new ContoRisparmio(nome);
     } else if (scelta == 2) {
-        conto = new ContoDeposito(nome, 0.05); // 5% di interesse
+        conto = new ContoDeposito(nome, 0.05);
     } else {
         cout << "Scelta non valida.\n";
         return 1;
     }
 
     if (testMode) {
-        conto->aggiungiTransazione(Transazione("entrata", 500.0, "2025-06-20"));
-        conto->aggiungiTransazione(Transazione("uscita", 200.0, "2025-06-21"));
+        conto->aggiungiTransazione(Transazione("entrata", 500.0, "20-06-2025"));
+        conto->aggiungiTransazione(Transazione("uscita", 200.0, "21-06-2025"));
         conto->stampaEstrattoConto();
         conto->salvaSuFile("estratto_conto_test.txt");
     } else {
@@ -149,15 +154,33 @@ int main(int argc, char* argv[]) {
             cin >> opzione;
 
             if (opzione == 1) {
-                string tipo, data;
+                int tipoTrans;
                 double importo;
-                cout << "Tipo di transazione (entrata/uscita): ";
-                cin >> tipo;
+                string data;
+
+                cout << "Tipo di transazione:\n";
+                cout << "[1] Entrata\n";
+                cout << "[2] Uscita\n";
+                cout << "Scelta: ";
+                cin >> tipoTrans;
+
+                if (tipoTrans != 1 && tipoTrans != 2) {
+                    cout << "Scelta non valida!\n";
+                    continue;
+                }
+
                 cout << "Importo: ";
                 cin >> importo;
-                cout << "Data (es. 2025-06-20): ";
+
+                if (importo <= 0) {
+                    cout << "L'importo deve essere maggiore di zero!\n";
+                    continue;
+                }
+
+                cout << "Data (formato gg-mm-aaaa, es. 20-06-2025): ";
                 cin >> data;
 
+                string tipo = (tipoTrans == 1) ? "entrata" : "uscita";
                 conto->aggiungiTransazione(Transazione(tipo, importo, data));
             } else if (opzione == 2) {
                 conto->stampaEstrattoConto();
