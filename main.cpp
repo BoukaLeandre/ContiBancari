@@ -5,7 +5,6 @@
 
 using namespace std;
 
-
 class Transazione {
 public:
     string tipo;
@@ -15,18 +14,19 @@ public:
     Transazione(string t, double i, string d) : tipo(t), importo(i), data(d) {}
 };
 
-
 class ContoCorrente {
 protected:
-    string intestatario;
+    string utente;
+    string tipoConto;
     vector<Transazione> transazioni;
 
 public:
-    ContoCorrente(string nome) : intestatario(nome) {}
+    ContoCorrente(string nome, string tipo) : utente(nome), tipoConto(tipo) {}
 
     void aggiungiTransazione(const Transazione& t) {
-        if (t.importo <=0) {
-            cerr << "l'importo deve essere positivo di 0.transazione annullata.\n";
+        if (t.importo <= 0) {
+            cerr << "L'importo deve essere maggiore di zero. Transazione annullata.\n";
+            return;
         }
         transazioni.push_back(t);
     }
@@ -44,17 +44,21 @@ public:
     }
 
     virtual void stampaEstrattoConto() const {
-        cout << "Estratto conto di " << intestatario << ":\n";
+        cout << "\n--- Estratto conto ---\n";
+        cout << "utente: " << utente << "\n";
+        cout << "Tipo di conto: " << tipoConto << "\n";
         for (const auto& t : transazioni) {
             cout << t.data << " - " << t.tipo << ": " << t.importo << " €\n";
         }
         cout << "Saldo finale: " << calcolaSaldo() << " €\n";
+        cout << "----------------------\n";
     }
 
     virtual void salvaSuFile(const string& nomeFile) const {
         ofstream file(nomeFile);
         if (file.is_open()) {
-            file << "Intestatario: " << intestatario << "\n";
+            file << "Intestatario: " << utente << "\n";
+            file << "Tipo di conto: " << tipoConto << "\n";
             for (const auto& t : transazioni) {
                 file << "tipo: " << t.tipo << "\n";
                 file << "importo: " << t.importo << " €\n";
@@ -70,36 +74,25 @@ public:
     virtual ~ContoCorrente() {}
 };
 
-
 class ContoRisparmio : public ContoCorrente {
 public:
-    ContoRisparmio(string nome) : ContoCorrente(nome) {}
-
-    void stampaTipo() const {
-        cout << "Tipo di conto: Risparmio\n";
-    }
+    ContoRisparmio(string nome) : ContoCorrente(nome, "Conto Risparmio") {}
 };
-
 
 class ContoDeposito : public ContoCorrente {
 private:
     double interessePercentuale;
 
 public:
-    ContoDeposito(string nome, double interesse) : ContoCorrente(nome), interessePercentuale(interesse) {}
+    ContoDeposito(string nome, double interesse)
+        : ContoCorrente(nome, "Conto Deposito"), interessePercentuale(interesse) {}
 
     void applicaInteresse() {
         double saldoAttuale = calcolaSaldo();
         double interesse = saldoAttuale * interessePercentuale;
         aggiungiTransazione(Transazione("entrata", interesse, "oggi"));
     }
-
-    void stampaTipo() const {
-        cout << "Tipo di conto: Deposito con interesse " << interessePercentuale * 100 << "%\n";
-    }
 };
-
-
 
 int main(int argc, char* argv[]) {
     bool testMode = argc > 1 && string(argv[1]) == "e";
