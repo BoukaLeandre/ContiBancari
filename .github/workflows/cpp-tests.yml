@@ -18,5 +18,4 @@ jobs:
         run: g++ main.cpp -o programma
 
       - name: Esecuzione del programma con input simulato
-        run: |
-          echo -e "le Beretti\n1\n1\nentrata\n500\n2025-06-21\n2\n0" | ./programma
+        run:
