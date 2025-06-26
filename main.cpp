@@ -57,7 +57,7 @@ public:
     virtual void salvaSuFile(const string& nomeFile) const {
         ofstream file(nomeFile);
         if (file.is_open()) {
-            file << "Intestatario: " << utente << "\n";
+            file << "utente: " << utente << "\n";
             file << "Tipo di conto: " << tipoConto << "\n";
             for (const auto& t : transazioni) {
                 file << "tipo: " << t.tipo << "\n";
@@ -90,7 +90,10 @@ public:
     void applicaInteresse() {
         double saldoAttuale = calcolaSaldo();
         double interesse = saldoAttuale * interessePercentuale;
-        aggiungiTransazione(Transazione("entrata", interesse, "oggi"));
+        if (interesse > 0) {
+            aggiungiTransazione(Transazione("entrata", interesse, "oggi"));
+            cout << "[INFO] Interesse applicato: +" << interesse << " €\n";
+        }
     }
 };
 
@@ -106,11 +109,12 @@ int main(int argc, char* argv[]) {
     } else {
         cout << "Benvenuto nel sistema bancario!\n";
         cout << "Inserisci il tuo nome completo: ";
+        cin.ignore();
         getline(cin, nome);
 
         cout << "Che tipo di conto vuoi aprire?\n";
         cout << "[1] Conto Risparmio\n";
-        cout << "[2] Conto Deposito\n";
+        cout << "[2] Conto Deposito (con interesse del 5%)\n";
         cout << "[5] Annulla\n";
         cin >> scelta;
 
@@ -121,11 +125,14 @@ int main(int argc, char* argv[]) {
     }
 
     ContoCorrente* conto = nullptr;
+    ContoDeposito* contoDeposito = nullptr;
 
     if (scelta == 1) {
         conto = new ContoRisparmio(nome);
     } else if (scelta == 2) {
-        conto = new ContoDeposito(nome, 0.05);
+        contoDeposito = new ContoDeposito(nome, 0.05);
+        conto = contoDeposito;
+        cout << "\n Hai scelto un Conto Deposito. Verra applicato un interesse del 5% sul saldo .\n";
     } else {
         cout << "Scelta non valida.\n";
         return 1;
@@ -134,6 +141,7 @@ int main(int argc, char* argv[]) {
     if (testMode) {
         conto->aggiungiTransazione(Transazione("entrata", 500.0, "20-06-2025"));
         conto->aggiungiTransazione(Transazione("uscita", 200.0, "21-06-2025"));
+        if (contoDeposito) contoDeposito->applicaInteresse();
         conto->stampaEstrattoConto();
         conto->salvaSuFile("estratto_conto_test.txt");
     } else {
@@ -143,6 +151,7 @@ int main(int argc, char* argv[]) {
             cout << "[1] Aggiungi transazione\n";
             cout << "[2] Stampa estratto conto\n";
             cout << "[3] Salva su file\n";
+            if (contoDeposito) cout << "[4] Applica interesse\n";
             cout << "[0] Esci\n";
             cin >> opzione;
 
@@ -170,16 +179,21 @@ int main(int argc, char* argv[]) {
                     continue;
                 }
 
-                cout << "Data (formato gg-mm-aaaa, es. 20-06-2025): ";
+                cout << "Data (formato gg-mm-aaaa): ";
                 cin >> data;
 
                 string tipo = (tipoTrans == 1) ? "entrata" : "uscita";
                 conto->aggiungiTransazione(Transazione(tipo, importo, data));
+
             } else if (opzione == 2) {
                 conto->stampaEstrattoConto();
+
             } else if (opzione == 3) {
                 conto->salvaSuFile("estratto_conto.txt");
                 cout << "Dati salvati nel file 'estratto_conto.txt'\n";
+
+            } else if (opzione == 4 && contoDeposito) {
+                contoDeposito->applicaInteresse();
             }
         } while (opzione != 0);
     }
