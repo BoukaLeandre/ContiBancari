@@ -1,4 +1,4 @@
-name: Test automatici C++
+name: Test Conti Bancari
 
 on:
   push:
@@ -7,15 +7,18 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout del codice
+      - name: Clonazione repository
         uses: actions/checkout@v3
 
-      - name: Compilazione
-        run: g++ main.cpp -o programma
+      - name: Installazione build-essential
+        run: sudo apt update && sudo apt install -y build-essential
 
-      - name: Esecuzione del programma con input simulato
-        run:
+      - name: Compilazione del programma
+        run: g++ -std=c++11 main.cpp -o main
+
+      - name: Esecuzione dei test automatici
+        run: ./main e
