@@ -1,0 +1,5 @@
+Utente: iy
+Tipo di conto: Conto Risparmio
+07-07-2025 - entrata: 300 €
+
+Saldo finale: 300 €

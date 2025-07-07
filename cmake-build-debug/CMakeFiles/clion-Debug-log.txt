@@ -11,6 +11,6 @@
 -- Check for working CXX compiler: C:/Program Files/JetBrains/CLion 2024.3.5/bin/mingw/bin/g++.exe - skipped
 -- Detecting CXX compile features
 -- Detecting CXX compile features - done
--- Configuring done (2.9s)
--- Generating done (0.2s)
+-- Configuring done (8.1s)
+-- Generating done (0.1s)
 -- Build files have been written to: C:/Users/Lenovo/Programma Transazioni Bancarie/cmake-build-debug

@@ -1,3 +1,13 @@
 # ninja log v6
-4	844	7721150492158326	CMakeFiles/untitled1.dir/main.cpp.obj	eb354cb85285d8ab
-846	1013	7721150500580628	untitled1.exe	443d840976453786
+16	2548	7736000742023377	lib/googletest/googletest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.obj	c74b147644829035
+24	2653	7736000742143081	CMakeFiles/test_conti.dir/Test/test_conti.cpp.obj	4390e91d762f010f
+8	12552	7736000741984307	lib/googletest/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.obj	ab68167981d5af17
+12555	17398	7736000867464586	lib/libgtest.a	849458055282753b
+17398	17517	7736000915897045	lib/libgtest_main.a	16508d08c0882518
+17517	23448	7736000917084708	test_conti.exe	84d1560c24467dfb
+75	1971	7736003991919130	CMakeFiles/test_conti.dir/Test/test_conti.cpp.obj	4390e91d762f010f
+1972	8529	7736004010885397	test_conti.exe	84d1560c24467dfb
+114	3531	7736007799918429	CMakeFiles/test_conti.dir/Test/test_conti.cpp.obj	4390e91d762f010f
+3531	10213	7736007834177677	test_conti.exe	84d1560c24467dfb
+23	2715	7736023370685857	CMakeFiles/test_conti.dir/Test/test_conti.cpp.obj	4390e91d762f010f
+2716	10039	7736023397615797	test_conti.exe	84d1560c24467dfb
