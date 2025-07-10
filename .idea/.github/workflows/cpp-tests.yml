@@ -1,0 +1,24 @@
+name: Test Conti Bancari
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonazione repository
+        uses: actions/checkout@v3
+
+      - name: Installazione build-essential
+        run: sudo apt update && sudo apt install -y build-essential
+
+      - name: Compilazione del programma
+        run: g++ -std=c++11 main.cpp -o main
+
+      - name: Esecuzione dei test automatici
+        run: ./main e
