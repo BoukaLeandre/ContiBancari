@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#ifndef UNIT_TEST
 #include <ctime>
 
 using namespace std;
@@ -213,3 +214,4 @@ int main() {
     cout << "Grazie per aver usato il nostro sistema!\n";
     return 0;
 }
+#endif
